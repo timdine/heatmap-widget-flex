@@ -19,20 +19,20 @@
 <configuration>
     <layers>
         <layer>
-            <name>Earthquakes HeatMap</name>
-            <url>http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Earthquakes/Since_1970/MapServer/0</url>
+            <name>Customer Outages</name>
+            <url>http://emagisrr01/ArcGIS/rest/services/OutagePointsProd/MapServer/0</url>
             <outFields>YYYYMMDD,Magnitude,Num_Injured,Num_Deaths,Name</outFields>
             <useproxy>false</useproxy>
             <useamf>true</useamf>
             <defaultquery>1=1</defaultquery>
-            <querytemplate>Magnitude &gt; REPLACE_STR</querytemplate>
-            <types>2,4,6,8</types>
-            <type_descs>Mag &gt; 2,Mag &gt; 4,Mag &gt; 6,Mag &gt; 8</type_descs>
+            <querytemplate>TERRITORY &gt; 'REPLACE_STR'</querytemplate>
+            <types>Eastern,Central,Western</types>
+            <type_descs>Eastern,Central,Western</type_descs>
         </layer>
     </layers>
     <ui>
         <widget_dimensions>
-            <width>410</width>
+            <width>500</width>
             <height>206</height>
         </widget_dimensions>
         <icons>
@@ -47,7 +47,7 @@
         </icons>
         <refresh_label>refreshing layer...</refresh_label>
         <query>
-            <comp_label>Earthquake Magnitude:</comp_label>
+            <comp_label>Territory:</comp_label>
             <heatmapquery_prompt>default selection</heatmapquery_prompt>
             <featurecount_label> features contained</featurecount_label>
         </query>
@@ -63,7 +63,7 @@
         </transparency>
         <density>
             <comp_label>Heat radius:</comp_label>
-            <defaultdensity>15</defaultdensity>
+            <defaultdensity>1</defaultdensity>
         </density>
         <symbol>
             <comp_label>Colors:</comp_label>

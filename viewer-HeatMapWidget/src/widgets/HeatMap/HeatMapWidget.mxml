@@ -114,6 +114,8 @@
             private var sliderThumbCount:int = 1;
             [Bindable]
             private var sliderThumbMovingRate:int = 1200;
+			
+			private var myTimer:Timer = new Timer(120000); // 1 second
 
             private function init():void
             {
@@ -208,7 +210,16 @@
                 showStateMainUI();
                 wTemplate.addTitlebarButton(ICON_URL + mainIcon, mainLabel, showStateMainUI);
                 wTemplate.addTitlebarButton(ICON_URL + settingsIcon, settingsLabel, showStateOptionsUI);
+				
+				
+				myTimer.addEventListener(TimerEvent.TIMER, runMany);
+				myTimer.start();
+				
             }
+			
+			protected function runMany(event:TimerEvent):void {
+				m_heatMapLayer.invalidateHeatMap();
+			}
 
             //--------------------------------------
             //  Core widget functions
@@ -310,7 +321,7 @@
 
             protected function widgetMinimizedHandler(event:Event):void
             {
-                m_heatMapLayer.visible = false;
+                //m_heatMapLayer.visible = false;
             }
 
             protected function timeToggleButtonChangeHandler(event:Event):void
@@ -439,7 +450,7 @@
                            change="densityChangeHandler(event)"
                            liveDragging="true"
                            maximum="50"
-                           minimum="10"
+                           minimum="1"
                            value="{heatmapDensity}"/>
             </s:HGroup>
             <samples:HeatMapThemeView id="heatMapThemeView"
