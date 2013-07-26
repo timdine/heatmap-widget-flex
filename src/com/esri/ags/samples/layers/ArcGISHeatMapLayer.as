@@ -127,7 +127,7 @@ public class ArcGISHeatMapLayer extends Layer
 
     private static const POINT:Point = new Point();
     private const BLURFILTER:BlurFilter = new BlurFilter(4, 4);
-    private var _densityRadius:int = 25;
+    private var _densityRadius:int = 10;
 
     //--------------------------------------------------------------------------
     //
@@ -251,7 +251,7 @@ public class ArcGISHeatMapLayer extends Layer
     /**
      * @private
      */
-    protected function invalidateHeatMap():void
+    public function invalidateHeatMap():void
     {
         if (map && map.extent)
         {
@@ -373,6 +373,24 @@ public class ArcGISHeatMapLayer extends Layer
         const facX:Number = mapW / extW;
         const facY:Number = mapH / extH;
 
+		var theMapScale:int  = map.scale;
+		var theHeatMapRadius:int = 15;
+		if (theMapScale > 500000) {
+			theHeatMapRadius = 1
+		} else if (theMapScale < 500000 && theMapScale > 300000) {
+			theHeatMapRadius = 350 / theMapScale * 3779; //200
+		} else if (theMapScale < 300000 && theMapScale > 30000) {
+			theHeatMapRadius = 250 / theMapScale * 3779; //140
+		} else {
+			theHeatMapRadius = 90 / theMapScale * 3779; //65
+		}
+		
+		theHeatMapRadius = theHeatMapRadius * _densityRadius;
+		
+		if (theHeatMapRadius < 1) {
+			theHeatMapRadius = 1;
+		}
+		
         if (!_dataProvider)
         {
             return;
@@ -462,7 +480,7 @@ public class ArcGISHeatMapLayer extends Layer
             for each (cluster in clusterDict)
             {
                 COLORS[0] = Math.max(0, Math.min(255, _clusterIndexCalculator(cluster, maxWeight)));
-                radius = _clusterRadiusCalculator(cluster, _densityRadius, maxWeight);
+                radius = _clusterRadiusCalculator(cluster, theHeatMapRadius, maxWeight); //_densityRadius
                 _wrapAround(cluster.center);
                 count++;
             }
@@ -480,7 +498,7 @@ public class ArcGISHeatMapLayer extends Layer
                 feature = _dataProvider.getItemAt(i) as Graphic;
                 mapPoint = feature.geometry as MapPoint;
                 COLORS[0] = Math.max(0, Math.min(255, _featureIndexCalculator(feature)));
-                radius = _featureRadiusCalculator(feature, _densityRadius);
+                radius = _featureRadiusCalculator(feature, theHeatMapRadius); //_densityRadius
                 _wrapAround(mapPoint);
             }
         }
